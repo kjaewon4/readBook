@@ -1,0 +1,26 @@
+package com.book.book.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Setter
+@Getter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "tb_users")
+public class TbUser {
+
+    @Id
+    @Column(name = "users_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long userId;
+
+    @Column(name ="users_name", unique = true, nullable = false)
+    private String userName; // 아이디
+
+    @Column(name ="users_password", nullable = false)
+    private String userPassword;
+
+}
