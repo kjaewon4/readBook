@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";  
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Link, useLocation, useNavigate  } from "react-router-dom";  
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import "./main.css";
 
@@ -7,9 +8,43 @@ const Login = () => {
     const [userName, setUserName] = useState("");
     const [userPassword, setUserPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);  // 비밀번호 표시 여부
+    const [errorMessage, setErrorMessage] = useState("");
+    const [error, setError] = useState(false);
+
+    const location = useLocation();  // URL 정보를 얻기 위한 Hook
+    const navigate = useNavigate();  // 페이지 이동을 위한 Hook
+
+    useEffect(() => {
+        // 로그인 실패 시 ?error=true 파라미터를 확인해서 오류 메시지 설정
+        const queryParams = new URLSearchParams(location.search);
+        if(queryParams.get('error') === 'true') {
+            setErrorMessage(true);
+        }
+    }, [location]);
+
   
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
       e.preventDefault();
+
+      if(!userName || !userPassword) {
+        setErrorMessage("아이디와 비밀번호를 입력하세요.")
+      }else{
+        try {
+            const response = await axios.post("http://localhost:8080/login", {
+                userName: userName,
+                userPassword: userPassword,
+            });
+            console.log("로그인 성공:", response.data);
+            
+            navigate("/"); 
+        }catch (error) {
+            console.error("로그인 실패:", error);
+            setErrorMessage("아이디 또는 비밀번호가 잘못되었습니다.");
+            setError(true);
+
+          }
+      }
+
       console.log("아이디:", userName);
       console.log("비밀번호:", userPassword);
     };
@@ -21,6 +56,7 @@ const Login = () => {
     return (
       <div className="login-container">
         <h2>로그인</h2>
+        {error && <div className="error-message">{errorMessage}</div>}  {/* 에러 메시지 출력 */}
         <form onSubmit={handleSubmit} className="login-form">
           <div className="input-group">
             <label htmlFor="userName">아이디</label>
