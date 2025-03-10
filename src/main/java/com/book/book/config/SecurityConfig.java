@@ -8,6 +8,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -22,7 +25,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // CSRF 비활성화 (프론트엔드 연동 시 필요)
+                .csrf(csrf -> csrf.disable()) //  프론트엔드와 백엔드가 다른 포트를 사용할 때 CORS와 관련된 문제를 피하기 위해 CSRF 보호를 비활성화
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/signup").permitAll() // 로그인하지 않은 사용자도 접근 가능
                         .anyRequest().authenticated() // 나머지는 인증 필요
@@ -39,8 +42,23 @@ public class SecurityConfig {
                         .logoutUrl("/logout") // 로그아웃 처리
                         .logoutSuccessUrl("/") // 로그아웃 성공 후 이동할 경로
                         .permitAll()
-                );
+                )
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()));  // CORS 설정 추가
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:3000");  // 허용할 도메인
+        configuration.addAllowedMethod("*");  // 허용할 HTTP 메소드 (GET, POST 등)
+        configuration.addAllowedHeader("*");  // 허용할 HTTP 헤더
+        configuration.setAllowCredentials(true);  // 쿠키 전송 허용
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);  // 모든 경로에 대해 CORS 설정 적용
+
+        return source;
     }
 }
