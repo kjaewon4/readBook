@@ -4,6 +4,7 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import axios from "axios";
 import './main.css';
 import Swal from 'sweetalert2';
+import Nav from "./Nav";
 
 // TODO : 아이디 중복이면 중복이라고 알려주기
 const SignUp = () => {
@@ -14,7 +15,7 @@ const SignUp = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false); // 비밀번호 확인 보이기 상태
     const [errorMessage, setErrorMessage] = useState("");
     const [passwordMatchError, setPasswordMatchError] = useState(""); // 비밀번호 일치 여부 확인
-    
+
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -56,56 +57,59 @@ const SignUp = () => {
     };
 
     return (
-        <div className="signup-container">
-            <h2>회원가입</h2>
-            {errorMessage && <p className="error-message">{errorMessage}</p>}
-            {passwordMatchError && <p className="error-message">{passwordMatchError}</p>}
-            <form onSubmit={handleSubmit} className="signup-form">
-                <div className="input-group">
-                    <label htmlFor="userName">아이디</label>
-                    <input
-                        type="text"
-                        id="userName"
-                        value={userName}
-                        onChange={(e) => setUserName(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="input-group">
-                    <label htmlFor="userPassword">비밀번호</label>
-                    <div className="password-wrapper">
+        <>
+            <Nav></Nav>
+            <div className="signup-container">
+                <h2>회원가입</h2>
+                {errorMessage && <p className="error-message">{errorMessage}</p>}
+                {passwordMatchError && <p className="error-message">{passwordMatchError}</p>}
+                <form onSubmit={handleSubmit} className="signup-form">
+                    <div className="input-group">
+                        <label htmlFor="userName">아이디</label>
                         <input
-                            type={showPassword ? "text" : "password"}
-                            id="userPassword"
-                            value={userPassword}
-                            onChange={(e) => setUserPassword(e.target.value)}
+                            type="text"
+                            id="userName"
+                            value={userName}
+                            onChange={(e) => setUserName(e.target.value)}
                             required
                         />
-                        <span className="password-eye-icon" onClick={togglePasswordVisibility}>
-                            {showPassword ? <FiEyeOff /> : <FiEye />}
-                        </span>
                     </div>
-                </div>
-                <div className="input-group">
-                    <label htmlFor="confirmPassword">비밀번호 확인</label>
-                    <div className="password-wrapper">
-                        <input
-                            type={showConfirmPassword ? "text" : "password"}
-                            id="confirmPassword"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            required
-                        />
-                        <span className="password-eye-icon" onClick={toggleConfirmPasswordVisibility}>
-                            {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
-                        </span>
+                    <div className="input-group">
+                        <label htmlFor="userPassword">비밀번호</label>
+                        <div className="password-wrapper">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                id="userPassword"
+                                value={userPassword}
+                                onChange={(e) => setUserPassword(e.target.value)}
+                                required
+                            />
+                            <span className="password-eye-icon" onClick={togglePasswordVisibility}>
+                                {showPassword ? <FiEyeOff /> : <FiEye />}
+                            </span>
+                        </div>
                     </div>
-                </div>
-                <button type="submit" className="signup-btn">
-                    회원가입
-                </button>
-            </form>
-        </div>
+                    <div className="input-group">
+                        <label htmlFor="confirmPassword">비밀번호 확인</label>
+                        <div className="password-wrapper">
+                            <input
+                                type={showConfirmPassword ? "text" : "password"}
+                                id="confirmPassword"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                required
+                            />
+                            <span className="password-eye-icon" onClick={toggleConfirmPasswordVisibility}>
+                                {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
+                            </span>
+                        </div>
+                    </div>
+                    <button type="submit" className="signup-btn">
+                        회원가입
+                    </button>
+                </form>
+            </div>
+        </>
     );
 };
 
